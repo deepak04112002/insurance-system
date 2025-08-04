@@ -83,4 +83,14 @@ class AuthServiceTest {
         assertThrows(RuntimeException.class, () ->
                 authService.login("test@example.com", "password"));
     }
+
+    @Test
+    void testLoginInvalidPassword() {
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
+        when(passwordEncoder.matches("wrongpassword", "encodedPassword")).thenReturn(false);
+
+        assertThrows(RuntimeException.class, () ->
+                authService.login("test@example.com", "wrongpassword"));
+    }
+
 }

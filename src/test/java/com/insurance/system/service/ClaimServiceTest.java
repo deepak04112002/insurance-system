@@ -88,4 +88,31 @@ class ClaimServiceTest {
         assertEquals("CLM001", result.get(0).getClaimNumber());
         verify(claimRepository).findAll();
     }
+
+    @Test
+    void testCreateClaimPolicyNotFound() {
+        when(policyRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () ->
+                claimService.create(testClaim, 1L));
+    }
+
+    @Test
+    void testGetByIdSuccess() {
+        when(claimRepository.findById(1L)).thenReturn(Optional.of(testClaim));
+
+        Claim result = claimService.getById(1L);
+
+        assertEquals("CLM001", result.getClaimNumber());
+        verify(claimRepository).findById(1L);
+    }
+
+    @Test
+    void testGetByIdNotFound() {
+        when(claimRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () ->
+                claimService.getById(1L));
+    }
+
 }
